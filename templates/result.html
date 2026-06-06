@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Hasil Diagnosis | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="result-hero">
+    <div>
+      <p class="eyebrow">Hasil diagnosis tertinggi</p>
+      <h1>{{ top_result.name }}</h1>
+      <p>{{ top_result.summary }}</p>
+    </div>
+    <div class="score-panel">
+      <span>Nilai CF</span>
+      <strong>{{ top_result.percent }}</strong>
+      <small>{{ top_result.matched_count }} gejala cocok dari basis aturan</small>
+    </div>
+  </section>
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Gejala dipilih</p>
+      <h2>Input pasien</h2>
+    </div>
+    <div class="selected-list">
+      {% for symptom in selected_symptoms %}
+        <span>{{ symptom }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Ranking diagnosis</p>
+      <h2>Perhitungan Certainty Factor</h2>
+    </div>
+
+    <div class="ranking-list">
+      {% for result in results %}
+        <article class="ranking-item">
+          <div class="ranking-topline">
+            <div>
+              <span class="rank-number">#{{ loop.index }}</span>
+              <h3>{{ result.name }}</h3>
+              <p>{{ result.specialist }} | {{ result.sample_count }} data referensi</p>
+            </div>
+            <strong>{{ result.percent }}</strong>
+          </div>
+          <div class="score-bar" aria-hidden="true">
+            <span style="width: {{ result.bar_width }}%"></span>
+          </div>
+
+          {% if result.matched %}
+            <details>
+              <summary>Gejala yang cocok</summary>
+              <div class="match-list">
+                {% for symptom in result.matched %}
+                  <span>{{ symptom.label }} <b>{{ symptom.percent }}</b></span>
+                {% endfor %}
+              </div>
+            </details>
+          {% else %}
+            <p class="muted">Tidak ada gejala terpilih yang cocok dengan aturan utama penyakit ini.</p>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+
+    <div class="result-actions">
+      <a class="button-primary" href="{{ url_for('diagnose_page') }}">Diagnosis Ulang</a>
+      <form class="inline-form" action="{{ url_for('calculation') }}" method="post">
+        {% for key in selected_symptom_keys %}
+          <input type="hidden" name="symptoms" value="{{ key }}">
+        {% endfor %}
+        <button class="button-secondary" type="submit">Lihat Perhitungan Manual</button>
+      </form>
+      <a class="button-secondary" href="{{ url_for('simulation') }}">Simulasi CF</a>
+    </div>
+  </section>
+{% endblock %}

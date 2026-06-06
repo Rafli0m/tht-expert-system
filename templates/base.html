@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}">
+      <img class="brand-logo" src="{{ url_for('static', filename='images/logo-tht.png') }}" alt="Logo {{ app_name }}">
+      <span>
+        <strong>{{ app_name }}</strong>
+        <small>Sistem Pakar THT</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navigasi utama">
+      {% for item in nav_items %}
+        <a class="{% if active_page == item.endpoint %}active{% endif %}" href="{{ url_for(item.endpoint) }}">{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>{{ app_name }}</strong>
+      <p>Sistem pakar diagnosis awal penyakit THT berbasis metode Certainty Factor.</p>
+    </div>
+    <p>Hasil sistem hanya alat bantu awal dan bukan pengganti pemeriksaan dokter.</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

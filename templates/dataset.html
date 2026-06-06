@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Dataset</p>
+    <h1>Data hasil filter untuk 5 penyakit THT</h1>
+    <p>
+      Sistem memakai file {{ stats.dataset_file }} yang berisi data penyakit THT hasil pemisahan dari dataset
+      utama. Kolom pertama adalah penyakit, sedangkan kolom lainnya adalah gejala biner 0/1.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="stat-strip">
+      <div><strong>{{ stats.rows }}</strong><span>Baris</span></div>
+      <div><strong>{{ stats.columns }}</strong><span>Kolom</span></div>
+      <div><strong>{{ stats.symptoms }}</strong><span>Kolom Gejala</span></div>
+      <div><strong>{{ stats.rule_count }}</strong><span>Aturan Utama</span></div>
+    </div>
+  </section>
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Distribusi penyakit</p>
+      <h2>Jumlah data per label THT</h2>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Penyakit</th>
+            <th>Jumlah Data</th>
+            <th>Proporsi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in stats.distribution %}
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.count }}</td>
+              <td>{{ row.percent }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Jurnal | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Jurnal</p>
+    <h1>Jurnal Pendukung Proyek</h1>
+    <p>
+      Kumpulan jurnal yang digunakan sebagai dasar pemilihan metode sistem pakar,
+      Certainty Factor, dan penguatan konteks diagnosis awal penyakit THT.
+    </p>
+  </section>
+
+  <section class="section reference-section">
+    <div class="section-heading split-heading">
+      <div>
+        <p class="eyebrow">Daftar jurnal</p>
+        <h2>Referensi yang Digunakan</h2>
+        <p>Judul diambil dari isi jurnal agar daftar referensi lebih jelas dan mudah dibaca.</p>
+      </div>
+      <div class="reference-count">
+        <strong>{{ references.jurnal|length }}</strong>
+        <span>Jurnal PDF</span>
+      </div>
+    </div>
+
+    <div class="reference-list reference-list-cards">
+      {% for item in references.jurnal %}
+        <a class="reference-card-link" href="{{ item.url }}" target="_blank" rel="noreferrer">
+          <span class="reference-number">{{ "%02d"|format(loop.index) }}</span>
+          <span class="reference-content">
+            <strong>{{ item.title }}</strong>
+            <small>{{ item.filename }}</small>
+          </span>
+        </a>
+      {% else %}
+        <p class="muted">Belum ada file jurnal.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Perhitungan Manual CF | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Perhitungan manual</p>
+    <h1>Langkah Hitung Certainty Factor</h1>
+    <p>
+      Berikut adalah perhitungan manual CF secara bertahap untuk setiap penyakit
+      berdasarkan gejala yang dipilih. Rumus kombinasi:
+      <strong>CF<sub>kombinasi</sub> = CF<sub>lama</sub> + CF<sub>gejala</sub> &times; (1 &minus; CF<sub>lama</sub>)</strong>
+    </p>
+  </section>
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Gejala dipilih</p>
+      <h2>Input Pasien</h2>
+    </div>
+    <div class="selected-list">
+      {% for symptom in selected_symptoms %}
+        <span>{{ symptom }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% for result in results %}
+    <section class="section compact-section">
+      <div class="section-heading">
+        <p class="eyebrow">#{{ loop.index }} &mdash; {{ result.specialist }}</p>
+        <h2>{{ result.name }}</h2>
+        <p>{{ result.summary }}</p>
+      </div>
+
+      {% if result.steps %}
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Langkah</th>
+                <th>Gejala</th>
+                <th>CF Gejala</th>
+                <th>CF Lama</th>
+                <th>CF Baru</th>
+                <th>Rumus</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for step in result.steps %}
+                <tr>
+                  <td>{{ step.index }}</td>
+                  <td>{{ step.label }}</td>
+                  <td>{{ step.cf_percent }}</td>
+                  <td>{{ step.old_percent }}</td>
+                  <td>{{ step.new_percent }}</td>
+                  <td><code>{{ step.formula }}</code></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="formula-box">
+          Hasil akhir CF {{ result.name }} = <strong>{{ result.percent }}</strong>
+          ({{ result.matched_count }} gejala cocok)
+        </div>
+      {% else %}
+        <div class="info-panel">
+          <p class="muted">Tidak ada gejala terpilih yang cocok dengan aturan penyakit ini. CF = 0.0%</p>
+        </div>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Rangkuman</p>
+      <h2>Ranking Akhir</h2>
+    </div>
+    <div class="ranking-list">
+      {% for result in results %}
+        <article class="ranking-item">
+          <div class="ranking-topline">
+            <div>
+              <span class="rank-number">#{{ loop.index }}</span>
+              <h3>{{ result.name }}</h3>
+              <p>{{ result.specialist }} | {{ result.matched_count }} gejala cocok</p>
+            </div>
+            <strong>{{ result.percent }}</strong>
+          </div>
+          <div class="score-bar" aria-hidden="true">
+            <span style="width: {{ result.bar_width }}%"></span>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    <div class="result-actions">
+      <a class="button-primary" href="{{ url_for('diagnose_page') }}">Diagnosis Ulang</a>
+      <a class="button-secondary" href="{{ url_for('simulation') }}">Simulasi CF</a>
+    </div>
+  </section>
+{% endblock %}

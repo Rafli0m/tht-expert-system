@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Simulasi CF | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Simulasi perhitungan</p>
+    <h1>Lihat langkah hitung Certainty Factor</h1>
+    <p>
+      Pilih satu penyakit dan beberapa gejala. Sistem akan menampilkan CF pakar setiap gejala dan proses
+      penggabungan CF secara bertahap.
+    </p>
+  </section>
+
+  <section class="section simulation-layout">
+    <aside class="info-panel">
+      <p class="eyebrow">Pilih penyakit</p>
+      <form class="stack-form" action="{{ url_for('simulation') }}" method="get">
+        <label>
+          <span>Penyakit</span>
+          <select name="disease">
+            {% for disease in diseases %}
+              <option value="{{ disease.key }}" {% if disease.key == selected_disease %}selected{% endif %}>{{ disease.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button class="button-secondary" type="submit">Tampilkan Gejala</button>
+      </form>
+    </aside>
+
+    <div>
+      {% if error %}
+        <div class="alert">{{ error }}</div>
+      {% endif %}
+
+      <form class="diagnosis-form" action="{{ url_for('simulation') }}" method="post">
+        <input type="hidden" name="disease" value="{{ selected_disease }}">
+        <fieldset class="symptom-group">
+          <legend>Gejala untuk {{ simulation.disease_name }}</legend>
+          <div class="symptom-list two-cols">
+            {% for symptom in simulation.symptoms %}
+              <label class="symptom-option">
+                <input type="checkbox" name="symptoms" value="{{ symptom.key }}" {% if symptom.key in simulation.selected %}checked{% endif %}>
+                <span>{{ symptom.label }} <b>{{ symptom.percent }}</b></span>
+              </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+        <div class="form-footer">
+          <p>Nilai di sebelah gejala adalah CF pakar yang dihitung dari frekuensi pada dataset.</p>
+          <button class="button-primary" type="submit">Simulasikan CF</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  {% if simulation.steps %}
+    <section class="section compact-section">
+      <div class="section-heading">
+        <p class="eyebrow">Hasil simulasi</p>
+        <h2>{{ simulation.disease_name }}: {{ simulation.final_percent }}</h2>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Langkah</th>
+              <th>Gejala</th>
+              <th>CF Gejala</th>
+              <th>CF Lama</th>
+              <th>CF Baru</th>
+              <th>Rumus</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for step in simulation.steps %}
+              <tr>
+                <td>{{ step.index }}</td>
+                <td>{{ step.label }}</td>
+                <td>{{ step.cf_percent }}</td>
+                <td>{{ step.old_percent }}</td>
+                <td>{{ step.new_percent }}</td>
+                <td><code>{{ step.formula }}</code></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

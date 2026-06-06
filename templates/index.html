@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ app_name }} | Sistem Pakar THT{% endblock %}
+
+{% block content %}
+  <section class="hero-section">
+    <div class="hero-copy">
+      <p class="eyebrow">Diagnosis awal penyakit telinga, hidung, dan tenggorokan</p>
+      <h1>Sistem Pakar THT Berbasis Certainty Factor</h1>
+      <p class="hero-text">
+        Pilih gejala yang dialami pasien. Sistem menghitung tingkat keyakinan untuk 5 penyakit THT
+        berdasarkan basis pengetahuan dari dataset dan menampilkan hasil dalam bentuk ranking.
+      </p>
+      <div class="hero-actions">
+        <a class="button-primary" href="{{ url_for('diagnose_page') }}">Mulai Diagnosis</a>
+        <a class="button-secondary" href="{{ url_for('diseases') }}">Lihat Basis Pengetahuan</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <img class="hero-image" src="{{ url_for('static', filename='images/hero-tht.png') }}" alt="">
+      <img class="mascot" src="{{ url_for('static', filename='images/mascot-tht.png') }}" alt="">
+    </div>
+  </section>
+
+  <section class="stat-strip" aria-label="Ringkasan sistem">
+    <div><strong>5</strong><span>Penyakit THT</span></div>
+    <div><strong>{{ total_symptoms }}</strong><span>Gejala Relevan</span></div>
+    <div><strong>CF</strong><span>Metode Keyakinan</span></div>
+    <div><strong>4.850</strong><span>Data THT</span></div>
+  </section>
+
+  <section class="section compact-section">
+    <div class="section-heading">
+      <p class="eyebrow">Penyakit yang dikenali</p>
+      <h2>5 Penyakit THT</h2>
+      <p>Sistem dapat mendiagnosis 5 penyakit THT berikut berdasarkan basis aturan Certainty Factor.</p>
+    </div>
+    <div class="disease-grid">
+      {% for key, info in disease_info.items() %}
+        <article class="disease-card">
+          <h3>{{ info.name }}</h3>
+          <p><strong>{{ info.specialist }}</strong></p>
+          <p>{{ info.summary }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

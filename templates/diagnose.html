@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Form Diagnosis | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Form diagnosis</p>
+    <h1>Pilih Gejala Pasien</h1>
+    <p>
+      Centang satu atau beberapa gejala yang paling sesuai dengan kondisi pasien.
+      Sistem akan menghitung tingkat keyakinan menggunakan metode Certainty Factor.
+    </p>
+  </section>
+
+  <section class="section diagnosis-section">
+    <div class="section-heading split-heading">
+      <div>
+        <p class="eyebrow">Gejala tersedia</p>
+        <h2>Daftar Gejala</h2>
+        <p>Total <strong>{{ total_symptoms }}</strong> gejala relevan dari 5 penyakit THT.</p>
+      </div>
+      <label class="search-box">
+        <span>Cari gejala</span>
+        <input id="symptomSearch" type="search" placeholder="Contoh: telinga, batuk, apnea">
+      </label>
+    </div>
+
+    {% if error %}
+      <div class="alert">{{ error }}</div>
+    {% endif %}
+
+    <form class="diagnosis-form" action="{{ url_for('diagnose_route') }}" method="post">
+      {% for group in symptom_groups %}
+        <fieldset class="symptom-group">
+          <legend>{{ group.name }}</legend>
+          <div class="symptom-list">
+            {% for symptom in group.symptoms %}
+              <label class="symptom-option" data-symptom-label="{{ symptom.label|lower }}">
+                <input type="checkbox" name="symptoms" value="{{ symptom.key }}">
+                <span>{{ symptom.label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+      {% endfor %}
+
+      <div class="form-footer">
+        <p>Sistem ini hanya alat bantu awal. Diagnosis akhir tetap perlu pemeriksaan dokter atau dokter spesialis THT.</p>
+        <button class="button-primary" type="submit">Hitung Diagnosis</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const searchInput = document.querySelector("#symptomSearch");
+    const symptomOptions = [...document.querySelectorAll(".symptom-option")];
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        const keyword = searchInput.value.trim().toLowerCase();
+        symptomOptions.forEach((option) => {
+          const label = option.dataset.symptomLabel || "";
+          option.hidden = Boolean(keyword) && !label.includes(keyword);
+        });
+      });
+    }
+  </script>
+{% endblock %}

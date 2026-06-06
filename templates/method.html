@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Metode CF | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Metode sistem pakar</p>
+    <h1>Certainty Factor untuk menghitung tingkat keyakinan</h1>
+    <p>
+      Certainty Factor digunakan untuk mengukur seberapa kuat gejala yang dipilih pengguna mendukung suatu
+      penyakit. Pada sistem ini, nilai CF pakar dibentuk dari frekuensi gejala pada dataset THT.
+    </p>
+  </section>
+
+  <section class="section two-column">
+    <article class="info-panel">
+      <p class="eyebrow">Bobot gejala</p>
+      <h2>CF pakar dari dataset</h2>
+      <div class="formula-box">CF_pakar = jumlah data penyakit dengan gejala / total data penyakit</div>
+      <p>
+        Contoh: jika gejala nyeri telinga muncul pada 53,4% data Otitis Media, maka CF pakar untuk gejala
+        tersebut adalah 0,534.
+      </p>
+    </article>
+
+    <article class="info-panel">
+      <p class="eyebrow">Input user</p>
+      <h2>Checklist gejala</h2>
+      <div class="formula-box">CF_gejala = CF_pakar x CF_user</div>
+      <p>
+        Karena input berupa checklist, sistem memakai CF_user = 1 untuk gejala yang dipilih pengguna.
+      </p>
+    </article>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <p class="eyebrow">Kombinasi CF</p>
+      <h2>Rumus penggabungan beberapa gejala</h2>
+    </div>
+    <div class="method-flow">
+      <article>
+        <span>1</span>
+        <h3>Pilih gejala</h3>
+        <p>User mencentang gejala yang dialami pasien pada form diagnosis.</p>
+      </article>
+      <article>
+        <span>2</span>
+        <h3>Cocokkan aturan</h3>
+        <p>Sistem mencocokkan gejala dengan basis aturan masing-masing penyakit THT.</p>
+      </article>
+      <article>
+        <span>3</span>
+        <h3>Gabungkan CF</h3>
+        <p>CF_combine = CF_old + CF_new x (1 - CF_old)</p>
+      </article>
+      <article>
+        <span>4</span>
+        <h3>Tampilkan ranking</h3>
+        <p>Penyakit dengan nilai CF tertinggi menjadi hasil diagnosis utama.</p>
+      </article>
+    </div>
+  </section>
+{% endblock %}

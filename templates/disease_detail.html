@@ -1,0 +1,31 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ disease.name }} | Basis Pengetahuan | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <a href="{{ url_for('diseases') }}" class="back-link">&larr; Kembali ke Daftar Penyakit</a>
+    <p class="eyebrow">{{ disease.specialist }}</p>
+    <h1>{{ disease.name }}</h1>
+    <p>{{ disease.summary }}</p>
+  </section>
+
+  <section class="section">
+    <div class="disease-detail" style="border: none; padding: 0;">
+      <div>
+        <h3>Fokus Gejala</h3>
+        <p>{{ disease.focus }}</p>
+        <p class="muted">{{ disease.sample_count }} data referensi pada dataset THT.</p>
+      </div>
+      <div class="symptom-rank">
+        <h3>Gejala Dominan</h3>
+        {% for symptom in disease.top_symptoms %}
+          <div class="mini-score">
+            <span>{{ symptom.label }}</span>
+            <b>{{ symptom.percent }}</b>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

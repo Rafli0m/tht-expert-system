@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Basis Pengetahuan | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Basis pengetahuan</p>
+    <h1>Fokus pada 5 penyakit THT</h1>
+    <p>
+      Halaman ini berisi basis aturan awal yang digunakan sistem pakar. Setiap penyakit memiliki ringkasan,
+      jumlah data referensi, dan gejala dominan yang dihitung dari frekuensi kemunculan pada dataset hasil filter.
+    </p>
+  </section>
+
+  <section class="section disease-detail-list">
+    {% for disease in diseases %}
+      <article class="disease-detail">
+        <div>
+          <span class="disease-tag">{{ disease.specialist }}</span>
+          <h2><a href="{{ url_for('disease_detail', id=disease.id) }}">{{ disease.name }}</a></h2>
+          <p>{{ disease.summary }}</p>
+          <p class="muted">Fokus gejala: {{ disease.focus }}</p>
+          <p class="muted">{{ disease.sample_count }} data referensi pada dataset THT.</p>
+        </div>
+        <div class="symptom-rank">
+          <h3>Gejala dominan</h3>
+          {% for symptom in disease.top_symptoms %}
+            <div class="mini-score">
+              <span>{{ symptom.label }}</span>
+              <b>{{ symptom.percent }}</b>
+            </div>
+          {% endfor %}
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+{% endblock %}

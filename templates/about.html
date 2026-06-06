@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Tentang | {{ app_name }}{% endblock %}
+
+{% block content %}
+  <section class="page-hero">
+    <p class="eyebrow">Tentang proyek</p>
+    <h1>Web sistem pakar untuk diagnosis awal penyakit THT</h1>
+    <p>
+      {{ app_name }} dibuat untuk membantu proses identifikasi awal penyakit telinga, hidung, dan tenggorokan
+      berdasarkan gejala pasien. Sistem memakai metode Certainty Factor agar hasil diagnosis memiliki nilai
+      tingkat keyakinan, bukan hanya pilihan penyakit tunggal.
+    </p>
+  </section>
+
+  <section class="section two-column">
+    <article class="info-panel">
+      <p class="eyebrow">Tujuan</p>
+      <h2>Menjadi alat bantu belajar sistem pakar</h2>
+      <p>
+        Aplikasi ini dirancang untuk kebutuhan proyek akhir mata kuliah Sistem Pakar. Basis pengetahuan dibentuk
+        dari dataset penyakit dan gejala, lalu dibatasi pada 5 penyakit THT sesuai fokus proyek.
+      </p>
+    </article>
+
+    <article class="info-panel">
+      <p class="eyebrow">Batasan</p>
+      <h2>Bukan pengganti diagnosis dokter</h2>
+      <p>
+        Hasil sistem adalah estimasi berbasis gejala yang dipilih pengguna. Pemeriksaan fisik, riwayat medis,
+        dan keputusan klinis tetap harus dilakukan oleh dokter atau dokter spesialis THT.
+      </p>
+    </article>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <p class="eyebrow">Ringkasan data</p>
+      <h2>Basis sistem saat ini</h2>
+    </div>
+    <div class="stat-strip">
+      <div><strong>{{ stats.rows }}</strong><span>Baris Data THT</span></div>
+      <div><strong>{{ stats.columns }}</strong><span>Kolom Dataset</span></div>
+      <div><strong>{{ stats.symptoms }}</strong><span>Gejala Asli</span></div>
+      <div><strong>{{ stats.displayed_symptoms }}</strong><span>Gejala Ditampilkan</span></div>
+    </div>
+  </section>
+{% endblock %}
