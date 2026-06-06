@@ -8,27 +8,63 @@
     <h1>Certainty Factor untuk menghitung tingkat keyakinan</h1>
     <p>
       Certainty Factor digunakan untuk mengukur seberapa kuat gejala yang dipilih pengguna mendukung suatu
-      penyakit. Pada sistem ini, nilai CF pakar dibentuk dari frekuensi gejala pada dataset THT.
+      penyakit. Pada sistem ini, MB dan MD dihitung dari probabilitas dataset, lalu diperkuat dengan bobot
+      rule revisi dari dokumen validasi.
     </p>
   </section>
 
   <section class="section two-column">
     <article class="info-panel">
-      <p class="eyebrow">Bobot gejala</p>
-      <h2>CF pakar dari dataset</h2>
-      <div class="formula-box">CF_pakar = jumlah data penyakit dengan gejala / total data penyakit</div>
+      <p class="eyebrow">Probabilitas dataset</p>
+      <h2>Hitung P(H) dan P(H|E)</h2>
+      <div class="formula-box">
+        P(H) = jumlah data penyakit / total data<br>
+        P(H|E) = jumlah data penyakit dengan evidence / jumlah data evidence
+      </div>
       <p>
-        Contoh: jika gejala nyeri telinga muncul pada 53,4% data Otitis Media, maka CF pakar untuk gejala
-        tersebut adalah 0,534.
+        H adalah hipotesis penyakit, sedangkan E adalah evidence gejala yang cocok pada rule.
+        Nilai P(H|E) menunjukkan peluang penyakit saat evidence tersebut muncul pada dataset.
       </p>
     </article>
 
     <article class="info-panel">
-      <p class="eyebrow">Input user</p>
-      <h2>Checklist gejala</h2>
-      <div class="formula-box">CF_gejala = CF_pakar x CF_user</div>
+      <p class="eyebrow">MB dan MD</p>
+      <h2>Normalisasi Certainty Factor</h2>
+      <div class="formula-box">
+        MB = (P(H|E) - P(H)) / (1 - P(H))<br>
+        MD = (P(H) - P(H|E)) / P(H)<br>
+        CF<sub>dataset</sub> = (MB - MD) / (1 - min(MB, MD))
+      </div>
       <p>
-        Karena input berupa checklist, sistem memakai CF_user = 1 untuk gejala yang dipilih pengguna.
+        MB dipakai saat P(H|E) lebih besar dari P(H), sedangkan MD dipakai saat P(H|E)
+        lebih kecil dari P(H). Hasilnya menjadi CF dataset yang bersifat data-driven.
+      </p>
+    </article>
+  </section>
+
+  <section class="section two-column">
+    <article class="info-panel">
+      <p class="eyebrow">Validasi rule</p>
+      <h2>Gunakan CF revisi</h2>
+      <div class="formula-box">
+        CF<sub>rule</sub> = bobot hasil validasi dataset<br>
+        Rasio = gejala cocok / total gejala rule
+      </div>
+      <p>
+        Dokumen validasi membandingkan setiap rule dengan frekuensi dan eksklusivitas gejala pada dataset.
+        Gejala yang hanya muncul pada satu penyakit diberi pengaruh lebih kuat dibanding gejala yang shared.
+      </p>
+    </article>
+
+    <article class="info-panel">
+      <p class="eyebrow">CF efektif</p>
+      <h2>Gabungkan dataset dan validasi</h2>
+      <div class="formula-box">
+        CF<sub>efektif</sub> = CF<sub>dataset</sub> &times; CF<sub>rule</sub> &times; Rasio
+      </div>
+      <p>
+        Rule tetap dapat berkontribusi walaupun hanya sebagian gejala dipilih, tetapi nilainya tidak dihitung
+        penuh karena dikalikan rasio kecocokan.
       </p>
     </article>
   </section>
@@ -36,28 +72,28 @@
   <section class="section">
     <div class="section-heading">
       <p class="eyebrow">Kombinasi CF</p>
-      <h2>Rumus penggabungan beberapa gejala</h2>
+      <h2>Alur perhitungan diagnosis</h2>
     </div>
     <div class="method-flow">
       <article>
         <span>1</span>
-        <h3>Pilih gejala</h3>
-        <p>User mencentang gejala yang dialami pasien pada form diagnosis.</p>
+        <h3>Dataset THT</h3>
+        <p>Sistem membaca distribusi penyakit dan evidence dari dataset hasil filter.</p>
       </article>
       <article>
         <span>2</span>
-        <h3>Cocokkan aturan</h3>
-        <p>Sistem mencocokkan gejala dengan basis aturan masing-masing penyakit THT.</p>
+        <h3>Hitung MB/MD</h3>
+        <p>P(H) dan P(H|E) dipakai untuk menghitung MB, MD, dan CF dataset.</p>
       </article>
       <article>
         <span>3</span>
-        <h3>Gabungkan CF</h3>
-        <p>CF_combine = CF_old + CF_new x (1 - CF_old)</p>
+        <h3>Terapkan validasi</h3>
+        <p>CF dataset dikalikan CF rule revisi dan rasio gejala cocok.</p>
       </article>
       <article>
         <span>4</span>
-        <h3>Tampilkan ranking</h3>
-        <p>Penyakit dengan nilai CF tertinggi menjadi hasil diagnosis utama.</p>
+        <h3>Gabungkan CF</h3>
+        <p>Semua CF efektif pada penyakit yang sama digabung, termasuk penyesuaian standar jika CF bernilai negatif.</p>
       </article>
     </div>
   </section>

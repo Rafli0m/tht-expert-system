@@ -201,42 +201,41 @@ def _g(codes: list[str]) -> list[str]:
     """Konversi list kode G ke key internal."""
     return [SYMPTOM_KEY_MAP[c] for c in codes]
 
-RULES_IFTHEN: list[tuple[str, list[str]]] = [
-    # Otitis Media
-    ("otitis media",                            _g(["G11","G14","G20"])),
-    ("otitis media",                            _g(["G08","G18","G19"])),
-    ("otitis media",                            _g(["G23","G28","G06"])),
-    ("otitis media",                            _g(["G05","G07","G14"])),
-    ("otitis media",                            _g(["G11","G23","G28","G14"])),
-    ("otitis media",                            _g(["G20","G08","G19"])),
-    # Nose Disorder (Sinusitis)
-    ("nose disorder",                           _g(["G30","G31","G32"])),
-    ("nose disorder",                           _g(["G12","G13","G07"])),
-    ("nose disorder",                           _g(["G21","G23","G20"])),
-    ("nose disorder",                           _g(["G05","G06","G14","G32"])),
-    ("nose disorder",                           _g(["G13","G31","G32"])),
-    ("nose disorder",                           _g(["G07","G30","G12"])),
-    # OSA
-    ("obstructive sleep apnea (osa)",           _g(["G26","G25","G27"])),
-    ("obstructive sleep apnea (osa)",           _g(["G15","G03","G22"])),
-    ("obstructive sleep apnea (osa)",           _g(["G16","G04","G09"])),
-    ("obstructive sleep apnea (osa)",           _g(["G01","G21","G33"])),
-    ("obstructive sleep apnea (osa)",           _g(["G26","G03","G22","G25"])),
-    ("obstructive sleep apnea (osa)",           _g(["G15","G27","G16"])),
-    # Ear Drum Damage
-    ("ear drum damage",                         _g(["G10","G34","G29"])),
-    ("ear drum damage",                         _g(["G08","G18","G14"])),
-    ("ear drum damage",                         _g(["G19","G28","G06"])),
-    ("ear drum damage",                         _g(["G17","G14","G29"])),
-    ("ear drum damage",                         _g(["G10","G08","G18","G29"])),
-    # ETD
-    ("eustachian tube dysfunction (ear disorder)", _g(["G02","G18","G14"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G24","G35","G27"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G08","G29","G05"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G17","G07","G14"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G02","G24","G35","G18"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G05","G27","G08"])),
-    ("eustachian tube dysfunction (ear disorder)", _g(["G02","G18","G24","G08","G14"])),
+RULES_IFTHEN: list[dict] = [
+    {"id": "R01", "disease": "otitis media", "symptoms": _g(["G11","G14","G20"]), "cf": 0.70},
+    {"id": "R02", "disease": "otitis media", "symptoms": _g(["G08","G18","G19"]), "cf": 0.62},
+    {"id": "R03", "disease": "otitis media", "symptoms": _g(["G23","G28","G06"]), "cf": 0.55},
+    {"id": "R04", "disease": "otitis media", "symptoms": _g(["G05","G07","G14"]), "cf": 0.60},
+    {"id": "R05", "disease": "otitis media", "symptoms": _g(["G11","G23","G28","G14"]), "cf": 0.72},
+    {"id": "R06", "disease": "otitis media", "symptoms": _g(["G20","G08","G19"]), "cf": 0.60},
+    
+    {"id": "R07", "disease": "nose disorder", "symptoms": _g(["G30","G31","G32"]), "cf": 0.85},
+    {"id": "R08", "disease": "nose disorder", "symptoms": _g(["G12","G13","G07"]), "cf": 0.75},
+    {"id": "R09", "disease": "nose disorder", "symptoms": _g(["G21","G23","G20"]), "cf": 0.55},
+    {"id": "R10", "disease": "nose disorder", "symptoms": _g(["G05","G06","G14","G32"]), "cf": 0.68},
+    {"id": "R11", "disease": "nose disorder", "symptoms": _g(["G13","G31","G32"]), "cf": 0.88},
+    {"id": "R12", "disease": "nose disorder", "symptoms": _g(["G07","G30","G12"]), "cf": 0.75},
+    
+    {"id": "R13", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G26","G25","G27"]), "cf": 0.85},
+    {"id": "R14", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G15","G03","G22"]), "cf": 0.80},
+    {"id": "R15", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G16","G04","G09"]), "cf": 0.78},
+    {"id": "R16", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G01","G21","G33"]), "cf": 0.75},
+    {"id": "R17", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G26","G03","G22","G25"]), "cf": 0.85},
+    {"id": "R18", "disease": "obstructive sleep apnea (osa)", "symptoms": _g(["G15","G27","G16"]), "cf": 0.75},
+    
+    {"id": "R19", "disease": "ear drum damage", "symptoms": _g(["G10","G34","G29"]), "cf": 0.88},
+    {"id": "R20", "disease": "ear drum damage", "symptoms": _g(["G08","G18","G14"]), "cf": 0.55},
+    {"id": "R21", "disease": "ear drum damage", "symptoms": _g(["G19","G28","G06"]), "cf": 0.55},
+    {"id": "R22", "disease": "ear drum damage", "symptoms": _g(["G17","G14","G29"]), "cf": 0.58},
+    {"id": "R23", "disease": "ear drum damage", "symptoms": _g(["G10","G08","G18","G29"]), "cf": 0.85},
+    
+    {"id": "R24", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G02","G18","G14"]), "cf": 0.65},
+    {"id": "R25", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G24","G35","G27"]), "cf": 0.72},
+    {"id": "R26", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G08","G29","G05"]), "cf": 0.62},
+    {"id": "R27", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G17","G07","G14"]), "cf": 0.58},
+    {"id": "R28", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G02","G24","G35","G18"]), "cf": 0.82},
+    {"id": "R29", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G05","G27","G08"]), "cf": 0.60},
+    {"id": "R30", "disease": "eustachian tube dysfunction (ear disorder)", "symptoms": _g(["G02","G18","G24","G08","G14"]), "cf": 0.82},
 ]
 
 # ---------------------------------------------------------------------------
@@ -274,33 +273,11 @@ DATAFRAME = load_dataset(DATASET_PATH)
 SYMPTOM_COLUMNS = [c for c in DATAFRAME.columns if c != "diseases"]
 
 
-def _build_cf_from_dataset() -> dict[str, dict[str, float]]:
-    cf_map: dict[str, dict[str, float]] = {}
-    for disease in TARGET_DISEASES:
-        rows = DATAFRAME[DATAFRAME["diseases"] == disease]
-        total = len(rows)
-        if total == 0:
-            cf_map[disease] = {}
-            continue
-        scores = rows[SYMPTOM_COLUMNS].mean(numeric_only=True)
-        cf_map[disease] = scores.to_dict()
-    return cf_map
-
-
-CF_FROM_DATASET: dict[str, dict[str, float]] = _build_cf_from_dataset()
-
+# ---------------------------------------------------------------------------
 DISEASE_COUNTS: dict[str, int] = {
     disease: int((DATAFRAME["diseases"] == disease).sum())
     for disease in TARGET_DISEASES
 }
-
-
-def _cf_pakar(disease: str, symptom: str) -> float:
-    """Ambil CF pakar gejala dari dataset; fallback 0.5 jika tidak ada."""
-    val = CF_FROM_DATASET.get(disease, {}).get(symptom, None)
-    if val is None or val == 0:
-        return 0.5
-    return float(val)
 
 
 # ---------------------------------------------------------------------------
@@ -308,11 +285,23 @@ def _cf_pakar(disease: str, symptom: str) -> float:
 # ---------------------------------------------------------------------------
 def _all_rule_symptoms() -> set[str]:
     symptoms: set[str] = set()
-    for _, gejala in RULES_IFTHEN:
-        symptoms.update(gejala)
+    for rule in RULES_IFTHEN:
+        symptoms.update(rule["symptoms"])
     return symptoms
 
 ALL_RULE_SYMPTOMS: set[str] = _all_rule_symptoms()
+
+
+# ---------------------------------------------------------------------------
+# Kumpulkan gejala-gejala yang relevan per penyakit (dari rules)
+# ---------------------------------------------------------------------------
+def _disease_symptom_set(disease: str) -> set[str]:
+    """Ambil semua gejala yang muncul di rules penyakit tertentu."""
+    syms: set[str] = set()
+    for rule in RULES_IFTHEN:
+        if rule["disease"] == disease:
+            syms.update(rule["symptoms"])
+    return syms
 
 
 # ---------------------------------------------------------------------------
@@ -322,64 +311,81 @@ def format_percent(value: float) -> str:
     return f"{value * 100:.1f}%"
 
 
-def combine_cf(cf_values: list[float]) -> float:
-    combined = 0.0
-    for cf in sorted(cf_values, reverse=True):
-        combined = combined + cf * (1 - combined)
-    return combined
+def _combine_two_cf(old_cf: float, new_cf: float) -> tuple[float, str]:
+    """Gabungkan dua CF menggunakan rumus kombinasi standar."""
+    if old_cf >= 0 and new_cf >= 0:
+        combined = old_cf + new_cf * (1 - old_cf)
+        formula = f"{old_cf:.4f} + {new_cf:.4f} × (1 - {old_cf:.4f}) = {combined:.4f}"
+    elif old_cf < 0 and new_cf < 0:
+        combined = old_cf + new_cf * (1 + old_cf)
+        formula = f"{old_cf:.4f} + {new_cf:.4f} × (1 + {old_cf:.4f}) = {combined:.4f}"
+    else:
+        denominator = 1 - min(abs(old_cf), abs(new_cf))
+        combined = (old_cf + new_cf) / denominator if denominator else 0.0
+        formula = (
+            f"({old_cf:.4f} + {new_cf:.4f}) / "
+            f"(1 - min(|{old_cf:.4f}|, |{new_cf:.4f}|)) = {combined:.4f}"
+        )
+    combined = max(-1.0, min(1.0, combined))
+    return combined, formula
 
 
 def build_cf_steps(cf_items: list[dict]) -> list[dict]:
+    """Bangun langkah-langkah kombinasi CF dari daftar rule yang terpenuhi."""
     steps = []
     combined = 0.0
-    for idx, item in enumerate(cf_items, start=1):
+    # Urutkan dari CF tertinggi
+    ordered = sorted(cf_items, key=lambda x: x["cf"], reverse=True)
+    for idx, item in enumerate(ordered, start=1):
         old_cf = combined
         cf = float(item["cf"])
-        combined = old_cf + cf * (1 - old_cf)
+        combined, formula = _combine_two_cf(old_cf, cf)
         steps.append({
             "index": idx,
+            "id": item.get("id", ""),
             "label": item["label"],
             "cf": cf,
             "old_cf": old_cf,
             "new_cf": combined,
             "cf_percent": format_percent(cf),
+            "cf_value": item.get("cf_value", f"{cf:.4f}"),
             "old_percent": format_percent(old_cf),
             "new_percent": format_percent(combined),
-            "formula": f"{old_cf:.3f} + {cf:.3f} x (1 - {old_cf:.3f}) = {combined:.3f}",
+            "formula": formula,
+            "symptoms_str": item.get("symptoms_str", ""),
+            "symptoms": item.get("symptoms", [])
         })
     return steps
 
 
 # ---------------------------------------------------------------------------
-# Diagnosis utama berbasis rules IF-THEN
+# Diagnosis utama — berbasis Rule (R01-R30)
 # ---------------------------------------------------------------------------
 def diagnose(selected_symptoms: list[str]) -> list[dict]:
     selected_set = set(selected_symptoms)
 
-    # Kumpulkan semua gejala yang terpicu per penyakit dari rules yang terpenuhi sebagian
-    # Strategi: rule dianggap berkontribusi jika MINIMAL 1 gejalanya cocok,
-    # lalu semua gejala yang cocok dari seluruh rules penyakit itu digabung (union).
-    disease_matched: dict[str, dict[str, float]] = {d: {} for d in TARGET_DISEASES}
-
-    for disease, rule_symptoms in RULES_IFTHEN:
-        for symptom in rule_symptoms:
-            if symptom in selected_set:
-                if symptom not in disease_matched[disease]:
-                    disease_matched[disease][symptom] = _cf_pakar(disease, symptom)
-
     results = []
     for disease in TARGET_DISEASES:
-        matched_dict = disease_matched[disease]
-        matched = [
-            {
-                "key": s,
-                "label": SYMPTOM_LABELS.get(s, s.title()),
-                "cf": cf,
-                "percent": format_percent(cf),
-            }
-            for s, cf in sorted(matched_dict.items(), key=lambda x: x[1], reverse=True)
-        ]
-        steps = build_cf_steps(matched)
+        matched_rules = []
+        for rule in RULES_IFTHEN:
+            if rule["disease"] == disease:
+                rule_symptoms_set = set(rule["symptoms"])
+                # Logika AND strict: rule hanya aktif jika semua gejalanya dipilih user
+                if rule_symptoms_set.issubset(selected_set):
+                    symptom_labels = [SYMPTOM_LABELS.get(s, s.title()) for s in rule["symptoms"]]
+                    matched_rules.append({
+                        "id": rule["id"],
+                        "disease": disease,
+                        "cf": rule["cf"],
+                        "symptoms": rule["symptoms"],
+                        "symptoms_str": " AND ".join(symptom_labels),
+                        "label": f"{rule['id']}",
+                        "cf_value": f"{rule['cf']:.4f}",
+                    })
+
+        # Urutkan rule dari CF tertinggi
+        matched_rules = sorted(matched_rules, key=lambda x: x["cf"], reverse=True)
+        steps = build_cf_steps(matched_rules)
         final_cf = steps[-1]["new_cf"] if steps else 0.0
 
         results.append({
@@ -390,8 +396,8 @@ def diagnose(selected_symptoms: list[str]) -> list[dict]:
             "cf": final_cf,
             "percent": format_percent(final_cf),
             "bar_width": max(final_cf * 100, 3 if final_cf > 0 else 0),
-            "matched": matched,
-            "matched_count": len(matched),
+            "matched": matched_rules,
+            "matched_count": len(matched_rules),
             "sample_count": DISEASE_COUNTS[disease],
             "steps": steps,
         })
@@ -426,30 +432,21 @@ def selected_symptom_labels(selected: list[str]) -> list[str]:
 # ---------------------------------------------------------------------------
 # Disease cards (untuk halaman Diseases & Simulasi)
 # ---------------------------------------------------------------------------
-def top_symptoms_for_disease(disease: str, limit: int = 8) -> list[dict]:
-    """Ambil gejala teratas berdasarkan CF pakar dari dataset,
-    dibatasi hanya gejala yang muncul di rules penyakit tersebut."""
-    rule_syms: set[str] = set()
-    for d, syms in RULES_IFTHEN:
-        if d == disease:
-            rule_syms.update(syms)
+def top_rules_for_disease(disease: str, limit: int = 8) -> list[dict]:
+    """Mengambil rules yang relevan untuk penyakit ini."""
+    ranked = []
+    for r in RULES_IFTHEN:
+        if r["disease"] == disease:
+            symptom_labels = [SYMPTOM_LABELS.get(s, s.title()) for s in r["symptoms"]]
+            ranked.append({
+                "id": r["id"],
+                "symptom_text": " AND ".join(symptom_labels),
+                "cf": r["cf"],
+                "percent": format_percent(r["cf"])
+            })
 
-    cf_map = CF_FROM_DATASET.get(disease, {})
-    ranked = sorted(
-        [(s, cf_map.get(s, 0.5)) for s in rule_syms if cf_map.get(s, 0) > 0],
-        key=lambda x: x[1],
-        reverse=True,
-    )[:limit]
-
-    return [
-        {
-            "key": s,
-            "label": SYMPTOM_LABELS.get(s, s.title()),
-            "cf": cf,
-            "percent": format_percent(cf),
-        }
-        for s, cf in ranked
-    ]
+    ranked.sort(key=lambda x: x["cf"], reverse=True)
+    return ranked[:limit]
 
 
 def get_disease_cards(limit: int = 8) -> list[dict]:
@@ -462,7 +459,7 @@ def get_disease_cards(limit: int = 8) -> list[dict]:
             "summary": DISEASE_INFO[disease]["summary"],
             "focus": DISEASE_INFO[disease]["focus"],
             "sample_count": DISEASE_COUNTS[disease],
-            "top_symptoms": top_symptoms_for_disease(disease, limit=limit),
+            "top_rules": top_rules_for_disease(disease, limit=limit),
         }
         for disease in TARGET_DISEASES
     ]
@@ -518,21 +515,37 @@ def build_simulation(disease: str, selected_symptoms: list[str]) -> dict:
     if disease not in TARGET_DISEASES:
         disease = TARGET_DISEASES[0]
 
-    available = top_symptoms_for_disease(disease, limit=20)
-    available_keys = {s["key"] for s in available}
-    selected_set = set(selected_symptoms) & available_keys
-
-    matched = [
+    # Ambil semua gejala untuk form simulasi
+    available_symptoms = list(_disease_symptom_set(disease))
+    available = [
         {
-            "key": s["key"],
-            "label": s["label"],
-            "cf": s["cf"],
-            "percent": s["percent"],
+            "key": s,
+            "label": SYMPTOM_LABELS.get(s, s.title())
         }
-        for s in available
-        if s["key"] in selected_set
+        for s in available_symptoms
     ]
-    steps = build_cf_steps(matched)
+    
+    selected_set = set(selected_symptoms) & set(available_symptoms)
+
+    matched_rules = []
+    for rule in RULES_IFTHEN:
+        if rule["disease"] == disease:
+            rule_symptoms_set = set(rule["symptoms"])
+            if rule_symptoms_set.issubset(selected_set):
+                symptom_labels = [SYMPTOM_LABELS.get(s, s.title()) for s in rule["symptoms"]]
+                matched_rules.append({
+                    "id": rule["id"],
+                    "disease": disease,
+                    "cf": rule["cf"],
+                    "symptoms": rule["symptoms"],
+                    "symptoms_str": " AND ".join(symptom_labels),
+                    "label": f"{rule['id']}",
+                    "cf_value": f"{rule['cf']:.4f}",
+                })
+
+    # Urutkan dari CF tertinggi
+    matched_rules = sorted(matched_rules, key=lambda x: x["cf"], reverse=True)
+    steps = build_cf_steps(matched_rules)
     final_cf = steps[-1]["new_cf"] if steps else 0.0
 
     return {

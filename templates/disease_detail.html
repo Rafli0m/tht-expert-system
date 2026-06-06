@@ -18,11 +18,11 @@
         <p class="muted">{{ disease.sample_count }} data referensi pada dataset THT.</p>
       </div>
       <div class="symptom-rank">
-        <h3>Gejala Dominan</h3>
-        {% for symptom in disease.top_symptoms %}
+        <h3>Rule Dominan</h3>
+        {% for rule in disease.top_rules %}
           <div class="mini-score">
-            <span>{{ symptom.label }}</span>
-            <b>{{ symptom.percent }}</b>
+            <span>{{ rule.id }}: {{ rule.symptom_text }}</span>
+            <b>CF {{ rule.percent }}</b>
           </div>
         {% endfor %}
       </div>

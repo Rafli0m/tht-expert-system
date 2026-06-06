@@ -12,7 +12,7 @@
     <div class="score-panel">
       <span>Nilai CF</span>
       <strong>{{ top_result.percent }}</strong>
-      <small>{{ top_result.matched_count }} gejala cocok dari basis aturan</small>
+      <small>{{ top_result.matched_count }} rule cocok dari basis aturan</small>
     </div>
   </section>
 
@@ -41,7 +41,7 @@
             <div>
               <span class="rank-number">#{{ loop.index }}</span>
               <h3>{{ result.name }}</h3>
-              <p>{{ result.specialist }} | {{ result.sample_count }} data referensi</p>
+              <p>{{ result.specialist }} | {{ result.matched_count }} rule cocok | {{ result.sample_count }} data referensi</p>
             </div>
             <strong>{{ result.percent }}</strong>
           </div>
@@ -51,15 +51,15 @@
 
           {% if result.matched %}
             <details>
-              <summary>Gejala yang cocok</summary>
+              <summary>Rule yang cocok</summary>
               <div class="match-list">
-                {% for symptom in result.matched %}
-                  <span>{{ symptom.label }} <b>{{ symptom.percent }}</b></span>
+                {% for rule in result.matched %}
+                  <span>{{ rule.id }}: {{ rule.symptoms_str }} <b>CF efektif {{ rule.cf_value }}</b></span>
                 {% endfor %}
               </div>
             </details>
           {% else %}
-            <p class="muted">Tidak ada gejala terpilih yang cocok dengan aturan utama penyakit ini.</p>
+            <p class="muted">Tidak ada Rule yang terpenuhi secara utuh untuk penyakit ini.</p>
           {% endif %}
         </article>
       {% endfor %}

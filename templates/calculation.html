@@ -7,9 +7,11 @@
     <p class="eyebrow">Perhitungan manual</p>
     <h1>Langkah Hitung Certainty Factor</h1>
     <p>
-      Berikut adalah perhitungan manual CF secara bertahap untuk setiap penyakit
-      berdasarkan gejala yang dipilih. Rumus kombinasi:
-      <strong>CF<sub>kombinasi</sub> = CF<sub>lama</sub> + CF<sub>gejala</sub> &times; (1 &minus; CF<sub>lama</sub>)</strong>
+      Perhitungan CF menggunakan pendekatan <strong>Rule-Based</strong>.
+      Sistem mengevaluasi kondisi AND pada setiap rule (R01-R30) secara ketat.
+      Jika semua premis terpenuhi, maka rule tersebut akan menghasilkan probabilitas pasti <strong>CF(H, E)</strong>.
+      Hasil CF dari rule yang terpenuhi digabungkan secara bertahap:
+      <strong>CF<sub>final(new)</sub> = CF<sub>final(old)</sub> + CF(H, E) &times; (1 &minus; CF<sub>final(old)</sub>)</strong>
     </p>
   </section>
 
@@ -34,16 +36,18 @@
       </div>
 
       {% if result.steps %}
+        {# --- Tabel ringkasan --- #}
         <div class="table-card">
           <table>
             <thead>
               <tr>
                 <th>Langkah</th>
-                <th>Gejala</th>
-                <th>CF Gejala</th>
-                <th>CF Lama</th>
-                <th>CF Baru</th>
-                <th>Rumus</th>
+                <th>ID Rule</th>
+                <th>Kondisi Rule Terpenuhi</th>
+                <th>CF(H, E)</th>
+                <th>CF_final(old)</th>
+                <th>CF_final(new)</th>
+                <th>Rumus Kombinasi</th>
               </tr>
             </thead>
             <tbody>
@@ -51,6 +55,7 @@
                 <tr>
                   <td>{{ step.index }}</td>
                   <td>{{ step.label }}</td>
+                  <td>{{ step.symptoms_str }}</td>
                   <td>{{ step.cf_percent }}</td>
                   <td>{{ step.old_percent }}</td>
                   <td>{{ step.new_percent }}</td>
@@ -61,9 +66,50 @@
           </table>
         </div>
 
+        {# --- Uraian detail per rule --- #}
+        <div class="calculation-detail-heading">
+          <h3>Uraian penggabungan CF antar rule</h3>
+          <p>Rule yang memenuhi kondisi digabungkan nilai probabilitasnya.</p>
+        </div>
+        <div class="calculation-step-list">
+          {% for step in result.steps %}
+            <article class="calculation-step">
+              <div class="calculation-step-header">
+                <div>
+                  <span class="rank-number">{{ step.index }}</span>
+                  <h3>Rule {{ step.label }} Terpenuhi</h3>
+                  <p>Nilai CF(H, E): <strong>{{ step.cf_percent }}</strong></p>
+                </div>
+                <strong>{{ step.new_percent }}</strong>
+              </div>
+              <div class="calc-stage-grid">
+                <div class="calc-stage">
+                  <span>Tahap 1</span>
+                  <h4>Evaluasi Kondisi (AND)</h4>
+                  <p>Gejala: {{ step.symptoms_str }}</p>
+                  <p>Karena pengguna memilih semua gejala, CF(E) = min(1.0, 1.0...) = 1.0</p>
+                </div>
+                <div class="calc-stage">
+                  <span>Tahap 2</span>
+                  <h4>Nilai CF(H, E)</h4>
+                  <p>Sesuai dengan basis pengetahuan pakar (Rule {{ step.label }}), probabilitasnya adalah:</p>
+                  <p>CF(H, E) = <code>{{ step.cf_percent }}</code></p>
+                </div>
+                <div class="calc-stage">
+                  <span>Tahap 3</span>
+                  <h4>Kombinasi CF_final</h4>
+                  <p>CF_final(old) = <b>{{ step.old_percent }}</b></p>
+                  <p>Rumus = <code>{{ step.formula }}</code></p>
+                  <p>CF_final(new) = <b>{{ step.new_percent }}</b></p>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
         <div class="formula-box">
           Hasil akhir CF {{ result.name }} = <strong>{{ result.percent }}</strong>
-          ({{ result.matched_count }} gejala cocok)
+          ({{ result.matched_count }} rules terpenuhi)
         </div>
       {% else %}
         <div class="info-panel">
@@ -85,7 +131,7 @@
             <div>
               <span class="rank-number">#{{ loop.index }}</span>
               <h3>{{ result.name }}</h3>
-              <p>{{ result.specialist }} | {{ result.matched_count }} gejala cocok</p>
+              <p>{{ result.specialist }} | {{ result.matched_count }} rules terpenuhi</p>
             </div>
             <strong>{{ result.percent }}</strong>
           </div>

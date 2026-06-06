@@ -1,11 +1,13 @@
 # THT Expert System
 
-Aplikasi sistem pakar diagnosis awal penyakit THT berbasis Flask dengan metode Certainty Factor.
+Aplikasi sistem pakar diagnosis awal penyakit THT berbasis Flask dengan metode Certainty Factor berbasis MB/MD dataset dan rule tervalidasi.
 
 ## Fitur
 
 - Diagnosis awal 5 penyakit THT berdasarkan gejala.
-- Perhitungan nilai keyakinan menggunakan Certainty Factor.
+- Perhitungan nilai keyakinan menggunakan P(H), P(H|E), MB, MD, dan CF normalisasi dari dataset.
+- Bobot CF revisi per rule dari dokumen validasi dipakai sebagai faktor validasi knowledge base.
+- Dukungan rule parsial dengan CF efektif berdasarkan rasio gejala yang cocok.
 - Simulasi langkah perhitungan CF.
 - Halaman dataset, daftar penyakit, metode, dan referensi.
 
