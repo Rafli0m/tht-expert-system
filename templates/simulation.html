@@ -3,142 +3,145 @@
 {% block title %}Simulasi CF | {{ app_name }}{% endblock %}
 
 {% block content %}
-  <section class="page-hero">
-    <p class="eyebrow">Simulasi perhitungan</p>
-    <h1>Lihat langkah hitung Certainty Factor</h1>
-    <p>
-      Pilih satu penyakit dan beberapa gejala. Sistem akan mencari Rule (aturan pakar) yang gejalanya 
-      terpenuhi (logika AND). Jika semua gejala pada sebuah Rule dipilih, Rule tersebut aktif.
-      CF dari Rule yang aktif kemudian akan digabungkan secara bertahap.
-    </p>
-  </section>
+<section class="page-hero">
+  <p class="eyebrow">Simulasi perhitungan</p>
+  <h1>Lihat langkah hitung Certainty Factor</h1>
+  <p>
+    Pilih satu penyakit dan beberapa gejala. Sistem akan mencari Rule (aturan pakar) yang gejalanya
+    terpenuhi (logika AND). Jika semua gejala pada sebuah Rule dipilih, Rule tersebut aktif.
+    CF dari Rule yang aktif kemudian akan digabungkan secara bertahap.
+  </p>
+</section>
 
-  <section class="section simulation-layout">
-    <aside class="info-panel">
-      <p class="eyebrow">Pilih penyakit</p>
-      <form class="stack-form" action="{{ url_for('simulation') }}" method="get">
-        <label>
-          <span>Penyakit</span>
-          <select name="disease">
-            {% for disease in diseases %}
-              <option value="{{ disease.key }}" {% if disease.key == selected_disease %}selected{% endif %}>{{ disease.name }}</option>
-            {% endfor %}
-          </select>
-        </label>
-        <button class="button-secondary" type="submit">Tampilkan Gejala</button>
-      </form>
-    </aside>
+<section class="section simulation-layout">
+  <aside class="info-panel">
+    <p class="eyebrow">Pilih penyakit</p>
+    <form class="stack-form" action="{{ url_for('simulation') }}" method="get">
+      <label>
+        <span>Penyakit</span>
+        <select name="disease">
+          {% for disease in diseases %}
+          <option value="{{ disease.key }}" {% if disease.key==selected_disease %}selected{% endif %}>{{ disease.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="button-secondary" type="submit">Tampilkan Gejala</button>
+    </form>
+  </aside>
 
-    <div>
-      {% if error %}
-        <div class="alert">{{ error }}</div>
-      {% endif %}
+  <div>
+    {% if error %}
+    <div class="alert">{{ error }}</div>
+    {% endif %}
 
-      <form class="diagnosis-form" action="{{ url_for('simulation') }}" method="post">
-        <input type="hidden" name="disease" value="{{ selected_disease }}">
-        <fieldset class="symptom-group">
-          <legend>Gejala untuk {{ simulation.disease_name }}</legend>
-          <div class="symptom-list two-cols">
-            {% for symptom in simulation.symptoms %}
-              <label class="symptom-option">
-                <input type="checkbox" name="symptoms" value="{{ symptom.key }}" {% if symptom.key in simulation.selected %}checked{% endif %}>
-                <span>{{ symptom.label }}</span>
-              </label>
-            {% endfor %}
-          </div>
-        </fieldset>
-        <div class="form-footer">
-          <p>Nilai CF dievaluasi berdasarkan kepatuhan gejala terhadap Rule pakar.</p>
-          <button class="button-primary" type="submit">Simulasikan CF</button>
+    <form class="diagnosis-form" action="{{ url_for('simulation') }}" method="post">
+      <input type="hidden" name="disease" value="{{ selected_disease }}">
+      <fieldset class="symptom-group">
+        <legend>Gejala untuk {{ simulation.disease_name }}</legend>
+        <div class="symptom-list two-cols">
+          {% for symptom in simulation.symptoms %}
+          <label class="symptom-option">
+            <input type="checkbox" name="symptoms" value="{{ symptom.key }}" {% if symptom.key in simulation.selected
+              %}checked{% endif %}>
+            <span>{{ symptom.label }}</span>
+          </label>
+          {% endfor %}
         </div>
-      </form>
-    </div>
-  </section>
+      </fieldset>
+      <div class="form-footer">
+        <p>Nilai CF dievaluasi berdasarkan kepatuhan gejala terhadap Rule pakar.</p>
+        <button class="button-primary" type="submit">Simulasikan CF</button>
+      </div>
+    </form>
+  </div>
+</section>
 
-  {% if simulation.steps %}
-    <section class="section compact-section">
-      <div class="section-heading">
-        <p class="eyebrow">Hasil simulasi</p>
-        <h2>{{ simulation.disease_name }}: {{ simulation.final_percent }}</h2>
-      </div>
-      <div class="table-card">
-        <table>
-          <thead>
-            <tr>
-              <th>Langkah</th>
-              <th>ID Rule</th>
-              <th>Kondisi Rule Terpenuhi</th>
-              <th>CF(H, E)</th>
-              <th>CF_final(old)</th>
-              <th>CF_final(new)</th>
-              <th>Rumus Kombinasi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for step in simulation.steps %}
-              <tr>
-                <td>{{ step.index }}</td>
-                <td>{{ step.label }}</td>
-                <td>{{ step.symptoms_str }}</td>
-                <td>{{ step.cf_percent }}</td>
-                <td>{{ step.old_percent }}</td>
-                <td>{{ step.new_percent }}</td>
-                <td><code>{{ step.formula }}</code></td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-
-      {# --- Uraian detail per rule --- #}
-      <div class="calculation-detail-heading">
-        <h3>Uraian penggabungan CF antar rule</h3>
-        <p>Rule &rarr; Evaluasi Kondisi (AND) &rarr; CF(Rule) &rarr; Kombinasi</p>
-      </div>
-      <div class="calculation-step-list">
+{% if simulation.steps %}
+<section class="section compact-section">
+  <div class="section-heading">
+    <p class="eyebrow">Hasil simulasi</p>
+    <h2>{{ simulation.disease_name }}: {{ simulation.final_percent }}</h2>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Langkah</th>
+          <th>ID Rule</th>
+          <th>Kondisi Rule Terpenuhi</th>
+          <th>CF(H, E)</th>
+          <th>CF_final(old)</th>
+          <th>CF_final(new)</th>
+          <th>Rumus Kombinasi</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for step in simulation.steps %}
-          <article class="calculation-step">
-            <div class="calculation-step-header">
-              <div>
-                <span class="rank-number">{{ step.index }}</span>
-                <h3>Rule {{ step.label }} Terpenuhi</h3>
-                <p>Nilai CF(H, E): <strong>{{ step.cf_percent }}</strong></p>
-              </div>
-              <strong>{{ step.new_percent }}</strong>
-            </div>
-            <div class="calc-stage-grid">
-              <div class="calc-stage">
-                <span>Tahap 1</span>
-                <h4>Evaluasi Kondisi (AND)</h4>
-                <p>Gejala: {{ step.symptoms_str }}</p>
-              </div>
-              <div class="calc-stage">
-                <span>Tahap 2</span>
-                <h4>Nilai CF(H, E)</h4>
-                <p>Sesuai dengan basis pengetahuan pakar (Rule {{ step.label }}), probabilitasnya adalah:</p>
-                <p>CF(H, E) = <code>{{ step.cf_percent }}</code></p>
-              </div>
-              <div class="calc-stage">
-                <span>Tahap 3</span>
-                <h4>Kombinasi CF_final</h4>
-                <p>CF_final(old) = <b>{{ step.old_percent }}</b></p>
-                <p><code>{{ step.formula }}</code></p>
-                <p>CF_final(new) = <b>{{ step.new_percent }}</b></p>
-              </div>
-            </div>
-          </article>
+        <tr>
+          <td>{{ step.index }}</td>
+          <td>{{ step.label }}</td>
+          <td>{{ step.symptoms_str }}</td>
+          <td>{{ step.cf_percent }}</td>
+          <td>{{ step.old_percent }}</td>
+          <td>{{ step.new_percent }}</td>
+          <td><code>{{ step.formula }}</code></td>
+        </tr>
         {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# --- Uraian detail per rule --- #}
+  <div class="calculation-detail-heading">
+    <h3>Uraian penggabungan CF antar rule</h3>
+    <p>Rule &rarr; Evaluasi Kondisi (AND) &rarr; CF(Rule) &rarr; Kombinasi</p>
+  </div>
+  <div class="calculation-step-list">
+    {% for step in simulation.steps %}
+    <article class="calculation-step">
+      <div class="calculation-step-header">
+        <div>
+          <span class="rank-number">{{ step.index }}</span>
+          <h3>Rule {{ step.label }} Terpenuhi</h3>
+          <p>Nilai CF(H, E): <strong>{{ step.cf_percent }}</strong></p>
+        </div>
+        <strong>{{ step.new_percent }}</strong>
       </div>
-    </section>
-  {% elif request.method == 'POST' and not error %}
-    <section class="section compact-section">
-      <div class="section-heading">
-        <p class="eyebrow">Hasil simulasi</p>
-        <h2>{{ simulation.disease_name }}: 0.0%</h2>
+      <div class="calc-stage-grid">
+        <div class="calc-stage">
+          <span>Tahap 1</span>
+          <h4>Evaluasi Kondisi (AND)</h4>
+          <p>Gejala: {{ step.symptoms_str }}</p>
+        </div>
+        <div class="calc-stage">
+          <span>Tahap 2</span>
+          <h4>Nilai CF(H, E)</h4>
+          <p>Sesuai dengan basis pengetahuan pakar (Rule {{ step.label }}), probabilitasnya adalah:</p>
+          <p>CF(H, E) = <code>{{ step.cf_percent }}</code></p>
+        </div>
+        <div class="calc-stage">
+          <span>Tahap 3</span>
+          <h4>Kombinasi CF_final</h4>
+          <p>CF_final(old) = <b>{{ step.old_percent }}</b></p>
+          <p><code>{{ step.formula }}</code></p>
+          <p>CF_final(new) = <b>{{ step.new_percent }}</b></p>
+        </div>
       </div>
-      <div class="info-panel">
-        <p class="muted">Tidak ada Rule yang terpenuhi secara utuh dari gejala yang dipilih. Pilih semua gejala pada salah satu Rule untuk melihat perhitungannya.</p>
-      </div>
-    </section>
-  {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% elif request.method == 'POST' and not error %}
+<section class="section compact-section">
+  <div class="section-heading">
+    <p class="eyebrow">Hasil simulasi</p>
+    <h2>{{ simulation.disease_name }}: 0.0%</h2>
+  </div>
+  <div class="info-panel">
+    <p class="muted">Tidak ada Rule yang terpenuhi secara utuh dari gejala yang dipilih. Pilih semua gejala pada salah
+      satu Rule untuk melihat perhitungannya.</p>
+  </div>
+</section>
+{% endif %}
 {% endblock %}
